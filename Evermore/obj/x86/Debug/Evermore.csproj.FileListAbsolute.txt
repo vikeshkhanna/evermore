@@ -1,0 +1,22 @@
+c:\users\vikesh\documents\visual studio 2010\Projects\Evermore\Evermore\bin\Debug\Evermore.exe
+c:\users\vikesh\documents\visual studio 2010\Projects\Evermore\Evermore\bin\Debug\Evermore.pdb
+c:\users\vikesh\documents\visual studio 2010\Projects\Evermore\Evermore\obj\x86\Debug\ResolveAssemblyReference.cache
+c:\users\vikesh\documents\visual studio 2010\Projects\Evermore\Evermore\obj\x86\Debug\MainWindow.baml
+c:\users\vikesh\documents\visual studio 2010\Projects\Evermore\Evermore\obj\x86\Debug\MainWindow.g.cs
+c:\users\vikesh\documents\visual studio 2010\Projects\Evermore\Evermore\obj\x86\Debug\App.g.cs
+c:\users\vikesh\documents\visual studio 2010\Projects\Evermore\Evermore\obj\x86\Debug\Evermore_MarkupCompile.cache
+c:\users\vikesh\documents\visual studio 2010\Projects\Evermore\Evermore\obj\x86\Debug\Evermore.g.resources
+c:\users\vikesh\documents\visual studio 2010\Projects\Evermore\Evermore\obj\x86\Debug\Evermore.Properties.Resources.resources
+c:\users\vikesh\documents\visual studio 2010\Projects\Evermore\Evermore\obj\x86\Debug\GenerateResource.read.1.tlog
+c:\users\vikesh\documents\visual studio 2010\Projects\Evermore\Evermore\obj\x86\Debug\GenerateResource.write.1.tlog
+c:\users\vikesh\documents\visual studio 2010\Projects\Evermore\Evermore\obj\x86\Debug\Evermore.exe
+c:\users\vikesh\documents\visual studio 2010\Projects\Evermore\Evermore\obj\x86\Debug\Evermore.pdb
+C:\Users\vikesh\documents\visual studio 2010\Projects\Evermore\Evermore\obj\x86\Debug\WelcomePage.baml
+C:\Users\vikesh\documents\visual studio 2010\Projects\Evermore\Evermore\obj\x86\Debug\WelcomePage.g.cs
+C:\Users\vikesh\documents\visual studio 2010\Projects\Evermore\Evermore\obj\x86\Debug\test.baml
+C:\Users\vikesh\documents\visual studio 2010\Projects\Evermore\Evermore\obj\x86\Debug\App.baml
+C:\Users\vikesh\documents\visual studio 2010\Projects\Evermore\Evermore\obj\x86\Debug\test.g.cs
+C:\Users\vikesh\documents\visual studio 2010\Projects\Evermore\Evermore\obj\x86\Debug\SearchPage.baml
+C:\Users\vikesh\documents\visual studio 2010\Projects\Evermore\Evermore\obj\x86\Debug\SearchPage.g.cs
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\Evermore.exe
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\Evermore.pdb
