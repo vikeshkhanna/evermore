@@ -25,6 +25,19 @@ namespace Evermore
         Watching
     }
 
+    public enum SearchMode
+    { 
+        Local = 0,
+        Remote
+    }
+
+    public enum PathMode
+    { 
+        Search = 0,
+        Absolute
+    }
+
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -40,6 +53,14 @@ namespace Evermore
             this.DataContext = this.evermoreModel;
         }
 
+        public EvermoreModel EvermoreModel
+        {
+            get
+            {
+                return this.evermoreModel;            
+            }
+        }
+
         private void buttonNext_Click(object sender, RoutedEventArgs e)
         {
             switch (this.evermoreModel.AppState)
@@ -50,6 +71,7 @@ namespace Evermore
                     this.evermoreModel.CurrentPage = this.evermoreModel.SearchPage;
                     this.evermoreModel.AppState = EvermoreState.Searching;
                     //this.buttonPrevious.IsEnabled = true;
+
                     break;
             }
           }
@@ -77,7 +99,11 @@ namespace Evermore
         private WelcomePage welcomePage = new WelcomePage();
         private SearchPage searchPage = new SearchPage();
         private UserControl currentPage;
-        
+        private SearchMode searchMode;
+        private PathMode pathMode;
+        private Boolean isAbsolutePath = false;
+        private Boolean isMachineLocal = false;
+
         #region Properties
 
         public WelcomePage WelcomePage
@@ -106,6 +132,7 @@ namespace Evermore
             {
                 this.currentPage = value;
                 this.RaisePropertyChanged("CurrentPage");
+                this.RaisePropertyChanged("ControlPanelColor");
             }
         }
 
@@ -115,11 +142,11 @@ namespace Evermore
             {
                 if (this.currentPage == this.welcomePage)
                 {
-                    return Brushes.BurlyWood.Color;
+                    return Brushes.BlueViolet.Color;
                 }
                 else if (this.currentPage == this.searchPage)
                 {
-                    return Brushes.BurlyWood.Color;
+                    return Brushes.DarkOrange.Color;
                 }
 
                 return Brushes.BlueViolet.Color;
@@ -137,6 +164,7 @@ namespace Evermore
                 this.appState = value;
                 this.RaisePropertyChanged("CanMoveBack");
                 this.RaisePropertyChanged("CanMoveNext");
+                this.RaisePropertyChanged("");
             }
         }
 
@@ -160,6 +188,67 @@ namespace Evermore
                 return true;
             }
         }
+
+        public String ControlPanelFooter
+        { 
+            get
+            {
+                if (this.currentPage == this.welcomePage)
+                {
+                    return "Some information, first";
+                }
+                else if(this.currentPage == this.searchPage)
+                {
+                    return "Patience!";
+                }
+
+                return "Coming Soon!";
+            }
+        }
+
+        public Boolean IsAbsolutePath
+        {
+            get
+            {
+                return this.isAbsolutePath; 
+            }
+            set
+            {
+                this.isAbsolutePath = value;
+
+                if (this.isAbsolutePath)
+                {
+                    this.pathMode = PathMode.Absolute;
+                }
+                else
+                {
+                    this.pathMode = PathMode.Search;
+                }
+            }
+        }
+
+        public Boolean IsMachineLocal
+        {
+            get
+            {
+                return this.isMachineLocal;
+            }
+            set
+            {
+                this.isMachineLocal = value;
+
+                if (this.isMachineLocal)
+                {
+                    this.searchMode = SearchMode.Local;
+                }
+                else
+                {
+                    this.searchMode = SearchMode.Remote;
+                }
+            }
+        }
+
+
         #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -172,4 +261,49 @@ namespace Evermore
             }
         }
     }
+
+    [ValueConversion(typeof(bool), typeof(bool))]
+    public class InverseBooleanConverter: IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            if (targetType != typeof(bool))
+                throw new InvalidOperationException("The target must be a boolean");
+
+            return !(bool)value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+    }
+    
+    [ValueConversion(typeof(string), typeof(bool))]
+    public class EmptyStringConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            string val = (string)value;
+            return (bool)(val.Trim().Length > 0);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+    }
+
 }

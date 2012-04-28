@@ -20,3 +20,23 @@ C:\Users\vikesh\documents\visual studio 2010\Projects\Evermore\Evermore\obj\x86\
 C:\Users\vikesh\documents\visual studio 2010\Projects\Evermore\Evermore\obj\x86\Debug\SearchPage.g.cs
 C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\Evermore.exe
 C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\Evermore.pdb
+C:\Vikesh\Development\Evermore\Evermore\bin\Debug\Evermore.exe
+C:\Vikesh\Development\Evermore\Evermore\bin\Debug\Evermore.pdb
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\SearchPage.baml
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\MainWindow.baml
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\test.baml
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\WelcomePage.baml
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\App.baml
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\SearchPage.g.cs
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\MainWindow.g.cs
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\test.g.cs
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\WelcomePage.g.cs
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\App.g.cs
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\Evermore_MarkupCompile.cache
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\Evermore.g.resources
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\Evermore.Properties.Resources.resources
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\Evermore_MarkupCompile.lref

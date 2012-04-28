@@ -69,13 +69,16 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
-        <StackPanel x:Name="PageCanvas" Grid.Row="0" VerticalAlignment="Center"></StackPanel>
+       
+       
+        <StackPanel x:Name="PageCanvas" Grid.Row="1" VerticalAlignment="Center"></StackPanel>
 
-        <Label x:Name="labelError" Grid.Row="1" Foreground="White" Visibility="Hidden" Padding="10,5,5,5" Content="An error occured">
+        <Label x:Name="labelError" Grid.Row="2" Foreground="White" Visibility="Hidden" Padding="10,5,5,5" Content="An error occured">
             <Label.Style>
                 <Style TargetType="{x:Type Label}">
                     <Setter Property="Background" Value="#360000" />
@@ -93,7 +96,7 @@
             </Label.Style>
         </Label>
 
-        <Grid Grid.Row="2" x:Name="ControlPanel" DockPanel.Dock="Bottom" Height="80">
+        <Grid Grid.Row="3" x:Name="ControlPanel" DockPanel.Dock="Bottom" Height="80">
             <Grid.Background>
                 <SolidColorBrush x:Name="ControlPanelBrush" Color="BlueViolet"></SolidColorBrush>
             </Grid.Background>
@@ -114,7 +117,7 @@
                     </Setter>
                 </Style>
             </Grid.Style>
-            <Label Grid.Column="0" Padding="10,10,10,10" FontSize="24" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Content="{StaticResource StageOneFooter}">
+            <Label Grid.Column="0" Padding="10,10,10,10" FontSize="24" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Content="{Binding Path=ControlPanelFooter}">
             </Label>
             
             <!--<Button Grid.Column="1"  Background="White" Foreground="Black" BorderBrush="Gray" Style="{StaticResource ResourceKey=MetroButton}" BorderThickness="1" 
@@ -124,6 +127,18 @@
             <Button x:Name="buttonNext" Grid.Column="3" Style="{StaticResource MetroButton}" Background="White" Click="buttonNext_Click"> ></Button>
             <Grid.Triggers>
                 <EventTrigger RoutedEvent="Button.Click" SourceName="buttonNext" >
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation Storyboard.TargetName="ControlPanelBrush" Storyboard.TargetProperty="Color"
+                                    To="{Binding ControlPanelColor}" Duration="00:00:1">
+                                </ColorAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+                
+                <EventTrigger RoutedEvent="Button.Click" SourceName="buttonPrevious" >
                     <EventTrigger.Actions>
                         <BeginStoryboard>
                             <Storyboard>
