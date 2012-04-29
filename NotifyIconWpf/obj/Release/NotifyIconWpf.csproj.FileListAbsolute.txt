@@ -1,0 +1,10 @@
+C:\Users\vikesh\Downloads\wpf-notifyicon\wpf-notifyicon\NotifyIconWpf\bin\Release\Hardcodet.Wpf.TaskbarNotification.xml
+C:\Users\vikesh\Downloads\wpf-notifyicon\wpf-notifyicon\NotifyIconWpf\bin\Release\Hardcodet.Wpf.TaskbarNotification.dll
+C:\Users\vikesh\Downloads\wpf-notifyicon\wpf-notifyicon\NotifyIconWpf\bin\Release\Hardcodet.Wpf.TaskbarNotification.pdb
+C:\Users\vikesh\Downloads\wpf-notifyicon\wpf-notifyicon\NotifyIconWpf\obj\Release\ResolveAssemblyReference.cache
+C:\Users\vikesh\Downloads\wpf-notifyicon\wpf-notifyicon\NotifyIconWpf\obj\Release\Hardcodet.Wpf.TaskbarNotification.g.resources
+C:\Users\vikesh\Downloads\wpf-notifyicon\wpf-notifyicon\NotifyIconWpf\obj\Release\Hardcodet.Wpf.TaskbarNotification.Properties.Resources.resources
+C:\Users\vikesh\Downloads\wpf-notifyicon\wpf-notifyicon\NotifyIconWpf\obj\Release\ResGen.read.1.tlog
+C:\Users\vikesh\Downloads\wpf-notifyicon\wpf-notifyicon\NotifyIconWpf\obj\Release\ResGen.write.1.tlog
+C:\Users\vikesh\Downloads\wpf-notifyicon\wpf-notifyicon\NotifyIconWpf\obj\Release\Hardcodet.Wpf.TaskbarNotification.dll
+C:\Users\vikesh\Downloads\wpf-notifyicon\wpf-notifyicon\NotifyIconWpf\obj\Release\Hardcodet.Wpf.TaskbarNotification.pdb

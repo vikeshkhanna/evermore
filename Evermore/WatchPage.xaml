@@ -1,0 +1,37 @@
+﻿<UserControl x:Class="Evermore.WatchPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="150" d:DesignWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="20" />
+        </Grid.ColumnDefinitions>
+        <Label Grid.Row="0" Grid.Column="1" Style="{StaticResource PageHeaderLabelStyle}">Watching!</Label>
+        <Grid Grid.Row="2" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
+                   Source="{Binding FileIcon}" Height="64" Width="64" />
+            <Label x:Name="LastUpdatedLabel" Grid.Row="0" Grid.Column="2">Last Updated at 10:30 PM</Label>
+            <Label x:Name="MinutesAgoLabel" Grid.Row="1" Grid.Column="2" Foreground="Green">5 minutes ago</Label>
+        </Grid>
+    </Grid>
+</UserControl>
