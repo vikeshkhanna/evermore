@@ -7,20 +7,33 @@
              d:DesignHeight="200" d:DesignWidth="400" Height="Auto" Width="Auto">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="20"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="20"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="40"></ColumnDefinition>
+            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="40" />
         </Grid.ColumnDefinitions>
-        <Label Grid.Row="0" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="32">Searching</Label>
-        <Label Grid.Row="2" Grid.Column="1" FontSize="16" VerticalAlignment="Top">Looking for file in C:\</Label>
-        <Label Grid.Row="3" Grid.Column="1" FontSize="12" VerticalAlignment="Top" Foreground="Red">Please Wait...</Label>
-            
-     </Grid>
+        <Label Grid.Row="0" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource PageHeaderLabelStyle}">Searching</Label>
+        <Label x:Name="ProgressLabel" Grid.Row="2" Grid.Column="1" FontSize="16" VerticalAlignment="Top" Content="{Binding SearchProgressLabelContent, FallbackValue='Looking in C:\\'}"></Label>
+        <Label x:Name="ProgressLabelSecondary" Grid.Row="3" Grid.Column="1" FontSize="12" VerticalAlignment="Top" Foreground="Red">Please Wait...</Label>
+        
+        <ComboBox x:Name="FoundFilesComboBox" Grid.Row="5" Grid.Column="1" Visibility="Visible" SelectedIndex="-1">
+            <ComboBox.Style>
+                <Style TargetType="ComboBox" >
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsFileFound}" Value="True" >
+                            <Setter Property="Opacity" Value="0" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ComboBox.Style>
+        </ComboBox>
+      </Grid>
 </UserControl>

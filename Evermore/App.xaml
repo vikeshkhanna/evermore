@@ -11,11 +11,17 @@
         <Style TargetType="Label">
             <Setter Property="FontFamily" Value="Segoe" />
         </Style>
+        
+        <Style x:Key="PageHeaderLabelStyle" TargetType="Label" >
+            <Setter Property="FontSize" Value="32" />
+        </Style>
+        
         <DropShadowEffect x:Key="DropShadowEffect" ShadowDepth="0" BlurRadius="10" Opacity="0.6" Color="Black" />
         <DropShadowEffect x:Key="DropShadowMandatoryInput" ShadowDepth="0" BlurRadius="5" Opacity="0.75" Color="Red" />
         <DropShadowEffect x:Key="DropShadowValidInput" ShadowDepth="0" BlurRadius="10" Opacity="0.9" Color="LightGreen" />
         <clr:String x:Key="StageOneFooter">Some information, first. </clr:String>
-
+        
+        
 
         <!-- Metro Style Check Box implementation -->
         <!--Checkbox style-->

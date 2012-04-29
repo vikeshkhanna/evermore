@@ -73,7 +73,7 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="40"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Label Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="30" Grid.Column="1">File Details</Label> 
+        <Label Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource PageHeaderLabelStyle}" Grid.Column="1">File Details</Label> 
         
         <Grid Grid.Row="2" Grid.Column="1" VerticalAlignment="Top">
             <Grid.RowDefinitions>
@@ -98,14 +98,14 @@
                      IsEnabled="{Binding ElementName=machineLocationCheckBox, Path=IsChecked, Converter={StaticResource BoolInverter}}" />
             <Label Grid.Row="2" Grid.Column="0">Machine Name :</Label>
             <CheckBox x:Name="machineLocationCheckBox" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" 
-                      Cursor="Hand" Style="{StaticResource MetroCheckBoxStyle}">Nevermind, Machine is Local</CheckBox>
+                      Cursor="Hand" Style="{StaticResource MetroCheckBoxStyle}" IsChecked="{Binding Path=IsMachineLocal}">Nevermind, Machine is Local</CheckBox>
             <CheckBox x:Name="absolutePathCheckBox" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" 
                       Cursor="Hand" Style="{StaticResource MetroCheckBoxStyle}" 
                       IsChecked="{Binding Path=IsAbsolutePath}">I haz given absolute path</CheckBox>
         </Grid>
         
         <!--Credentials -->
-        <Label Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="30" Grid.Column="1">Credentials</Label>
+        <Label Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="30" Grid.Column="1" Style="{StaticResource PageHeaderLabelStyle}">Credentials</Label>
 
         <Grid Grid.Row="6" Grid.Column="1" VerticalAlignment="Top">
             <Grid.RowDefinitions>

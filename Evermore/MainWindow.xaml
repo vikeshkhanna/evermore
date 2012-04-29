@@ -124,7 +124,8 @@
                     VerticalAlignment="Center"  Height="Auto" >Start</Button>-->
             <Button x:Name="buttonPrevious" Grid.Column="1" Style="{StaticResource MetroButton}" Background="White" Content="&lt;" 
                     Click="buttonPrevious_Click"  IsEnabled="{Binding CanMoveBack}"/>
-            <Button x:Name="buttonNext" Grid.Column="3" Style="{StaticResource MetroButton}" Background="White" Click="buttonNext_Click"> ></Button>
+            <Button x:Name="buttonNext" Grid.Column="3" Style="{StaticResource MetroButton}" Background="White" Click="buttonNext_Click"
+                    IsEnabled="{Binding CanMoveNext}" Content="&gt;" />
             <Grid.Triggers>
                 <EventTrigger RoutedEvent="Button.Click" SourceName="buttonNext" >
                     <EventTrigger.Actions>

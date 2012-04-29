@@ -40,3 +40,5 @@ C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\GenerateResource.read.1.tl
 C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\GenerateResource.write.1.tlog
 C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\Evermore_MarkupCompile.lref
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\WatchPage.baml
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\WatchPage.g.cs

@@ -12,6 +12,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Threading;
+using System.Drawing;
 
 namespace Evermore
 {
@@ -37,6 +40,39 @@ namespace Evermore
         Absolute
     }
 
+    class LocalFileArgs
+    { 
+        public string searchFile;
+        public List<string> ignoreDirs;
+        public int MAX_DEPTH;
+
+        public LocalFileArgs(string _searchFile, List<string> _ignoreDirs, int _max)
+        {
+            searchFile = _searchFile;
+            ignoreDirs = _ignoreDirs;
+            MAX_DEPTH = _max;
+        }
+    }
+
+    class RemoteFileArgs
+    {
+        public string machine;
+        public string username;
+        public string password;
+        public string searchFile;
+        public List<string> ignoreDirs;
+        public int MAX_DEPTH;
+
+        public  RemoteFileArgs(string _machine, string _username, string _password, string _searchFile, List<string> _ignoreDirs, int _max)
+        {
+            machine = _machine;
+            username = _username;
+            password = _password;
+            searchFile = _searchFile;
+            ignoreDirs = _ignoreDirs;
+            MAX_DEPTH = _max;
+        }
+    }
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -44,6 +80,30 @@ namespace Evermore
     public partial class MainWindow : Window
     {
         private EvermoreModel evermoreModel = new EvermoreModel();
+        private BackgroundWorker searchBackgroundWorker = new BackgroundWorker();
+        private List<string> IgnoreDirs = new List<string> { "system", "windows", "program", "users" };
+      
+        public void reportSearchProgress(string file, bool isSearchFile)
+        {
+            if(!this.evermoreModel.SearchPage.Dispatcher.CheckAccess()) 
+            {
+                this.evermoreModel.SearchPage.Dispatcher.BeginInvoke(
+                    new Action<string, bool> (reportSearchProgress), new object[] { file, isSearchFile });
+                return;
+            }
+            
+            if (isSearchFile)
+            {
+                this.evermoreModel.IsFileFound = true;
+                this.evermoreModel.SearchPage.FoundFilesComboBox.Items.Add(file);
+                Debug.WriteLine("[Success] Received file : " + file);
+            }
+            else
+            {
+                this.evermoreModel.SearchProgressLabelContent = "Looking in " + file;
+                Debug.WriteLine("[Reporting] Processing dir : " + file);
+            }
+        }
 
         public MainWindow()
         {
@@ -51,8 +111,11 @@ namespace Evermore
             this.PageCanvas.Children.Add(this.evermoreModel.WelcomePage);
             this.evermoreModel.CurrentPage = this.evermoreModel.WelcomePage;
             this.DataContext = this.evermoreModel;
+            this.searchBackgroundWorker.DoWork +=new DoWorkEventHandler(searchBackgroundWorker_DoWork);
+            this.searchBackgroundWorker.RunWorkerCompleted +=new RunWorkerCompletedEventHandler(searchBackgroundWorker_RunWorkerCompleted);
         }
 
+        #region Properties
         public EvermoreModel EvermoreModel
         {
             get
@@ -60,6 +123,26 @@ namespace Evermore
                 return this.evermoreModel;            
             }
         }
+        #endregion
+
+        #region Background Worker
+
+        private void searchBackgroundWorker_DoWork(object sender, DoWorkEventArgs args)
+        {   
+            if(this.evermoreModel.IsMachineLocal)
+            {
+                LocalFileArgs localFileArgs = (LocalFileArgs)args.Argument;
+                List<string> files = Utils.SearchFileLocal(localFileArgs.searchFile, localFileArgs.ignoreDirs, localFileArgs.MAX_DEPTH, this.reportSearchProgress);
+            }
+        }
+
+        private void searchBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs args)
+        { 
+            this.evermoreModel.AppState = EvermoreState.SearchingComplete;
+        }
+
+        #endregion
+
 
         private void buttonNext_Click(object sender, RoutedEventArgs e)
         {
@@ -67,11 +150,23 @@ namespace Evermore
             { 
                 case EvermoreState.Welcome:
                     this.PageCanvas.Children.Remove(this.evermoreModel.CurrentPage);
-                    this.PageCanvas.Children.Add(this.evermoreModel.SearchPage);
-                    this.evermoreModel.CurrentPage = this.evermoreModel.SearchPage;
-                    this.evermoreModel.AppState = EvermoreState.Searching;
+                    
+                    if (!this.evermoreModel.IsAbsolutePath)
+                    {
+                        this.evermoreModel.AppState = EvermoreState.Searching;
+                        this.PageCanvas.Children.Add(this.evermoreModel.SearchPage);
+                        this.evermoreModel.CurrentPage = this.evermoreModel.SearchPage;
+                        this.searchBackgroundWorker.RunWorkerAsync(new LocalFileArgs(this.evermoreModel.WelcomePage.fileNameTextBox.Text, 
+                            this.IgnoreDirs, 5));
+                    }
+                    else
+                    {
+                        this.evermoreModel.AppState = EvermoreState.Watching;
+                        this.PageCanvas.Children.Add(this.evermoreModel.WatchPage);
+                        this.evermoreModel.CurrentPage = this.evermoreModel.WatchPage;
+                    }
+                    
                     //this.buttonPrevious.IsEnabled = true;
-
                     break;
             }
           }
@@ -87,6 +182,18 @@ namespace Evermore
                     this.evermoreModel.AppState = EvermoreState.Welcome;
                     //this.buttonPrevious.IsEnabled = false;
                     break;
+                case EvermoreState.Watching:
+                    this.PageCanvas.Children.Remove(this.evermoreModel.CurrentPage);
+                    this.PageCanvas.Children.Add(this.evermoreModel.WelcomePage);
+                    this.evermoreModel.CurrentPage = this.evermoreModel.WelcomePage;
+                    this.evermoreModel.AppState = EvermoreState.Welcome;
+                    break;
+                case EvermoreState.SearchingComplete:
+                    this.PageCanvas.Children.Remove(this.evermoreModel.CurrentPage);
+                    this.PageCanvas.Children.Add(this.evermoreModel.WelcomePage);
+                    this.evermoreModel.CurrentPage = this.evermoreModel.WelcomePage;
+                    this.evermoreModel.AppState = EvermoreState.Welcome;
+                    break;
             }
         }
 
@@ -98,11 +205,14 @@ namespace Evermore
         private EvermoreState appState;
         private WelcomePage welcomePage = new WelcomePage();
         private SearchPage searchPage = new SearchPage();
+        private WatchPage watchPage = new WatchPage();
         private UserControl currentPage;
         private SearchMode searchMode;
         private PathMode pathMode;
         private Boolean isAbsolutePath = false;
         private Boolean isMachineLocal = false;
+        private Boolean isFileFound = false;
+        private string searchProgressLabelContent;
 
         #region Properties
 
@@ -122,6 +232,14 @@ namespace Evermore
             }
         }
 
+        public WatchPage WatchPage
+        {
+            get
+            {
+                return this.watchPage;
+            }
+        }
+
         public UserControl CurrentPage
         {
             get
@@ -132,24 +250,29 @@ namespace Evermore
             {
                 this.currentPage = value;
                 this.RaisePropertyChanged("CurrentPage");
+                this.RaisePropertyChanged("ControlPanelFooter");
                 this.RaisePropertyChanged("ControlPanelColor");
             }
         }
 
-        public Color ControlPanelColor
+        public System.Windows.Media.Color ControlPanelColor
         {
             get
             {
                 if (this.currentPage == this.welcomePage)
                 {
-                    return Brushes.BlueViolet.Color;
+                    return System.Windows.Media.Brushes.BlueViolet.Color;
                 }
                 else if (this.currentPage == this.searchPage)
                 {
-                    return Brushes.DarkOrange.Color;
+                    return System.Windows.Media.Brushes.DarkOrange.Color;
+                }
+                else if(this.currentPage == this.WatchPage)
+                {
+                    return System.Windows.Media.Brushes.DeepPink.Color;
                 }
 
-                return Brushes.BlueViolet.Color;
+                return System.Windows.Media.Brushes.BlueViolet.Color;
             }
         }
 
@@ -162,9 +285,30 @@ namespace Evermore
             set
             {
                 this.appState = value;
+
+                switch(this.AppState)
+                {
+                    case  EvermoreState.Searching:
+                        this.IsFileFound = false;
+                        break;
+                    
+                    case EvermoreState.SearchingComplete:
+                        
+                        if (this.IsFileFound)
+                        {
+                            this.SearchProgressLabelContent = "Done! Choose a file like a sir.";
+                        }
+                        else
+                        {
+                            this.SearchProgressLabelContent = "Nothing to do here. File not found.";
+                        }
+                        break;
+                }
+
+
                 this.RaisePropertyChanged("CanMoveBack");
                 this.RaisePropertyChanged("CanMoveNext");
-                this.RaisePropertyChanged("");
+                this.RaisePropertyChanged("FoundFiles");
             }
         }
 
@@ -172,12 +316,12 @@ namespace Evermore
         {
             get
             {
-                if (this.AppState != EvermoreState.Welcome)
+                if (this.AppState == EvermoreState.Welcome || this.AppState == EvermoreState.Searching)
                 {
-                    return true;
+                    return false;
                 }
 
-                return false;
+                return true;
             }
         }
 
@@ -185,6 +329,11 @@ namespace Evermore
         {
             get
             {
+                if (this.AppState == EvermoreState.Watching || this.AppState == EvermoreState.Searching)
+                {
+                    return false;
+                }
+
                 return true;
             }
         }
@@ -248,12 +397,52 @@ namespace Evermore
             }
         }
 
+        public ImageSource FileIcon
+        {
+            get
+            {
+                return new BitmapImage(new Uri(@"C:\Vikesh\Pics\GJ Visit, March 2012\p1.jpg"));
+            }
+            set
+            {
+                this.RaisePropertyChanged("FileIcon");
+            }
+        }
+
+        public Boolean IsFileFound
+        {
+            get
+            {
+                return this.isFileFound;
+            }
+            set
+            {
+                if (this.isFileFound != value)
+                {
+                    this.isFileFound = value;
+                    this.RaisePropertyChanged("IsFileFound");
+                }
+            }
+        }
+
+        public string SearchProgressLabelContent
+        {
+            get
+            {
+                return this.searchProgressLabelContent;
+            }
+            set
+            {
+                this.searchProgressLabelContent = value;
+                this.RaisePropertyChanged("SearchProgressLabelContent");
+            }
+        }
 
         #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void RaisePropertyChanged(string propName)
+        public void RaisePropertyChanged(string propName)
         {
             if (PropertyChanged != null)
             {
