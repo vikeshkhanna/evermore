@@ -22,14 +22,52 @@
         </Grid.ColumnDefinitions>
         <Label Grid.Row="0" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource PageHeaderLabelStyle}">Searching</Label>
         <Label x:Name="ProgressLabel" Grid.Row="2" Grid.Column="1" FontSize="16" VerticalAlignment="Top" Content="{Binding SearchProgressLabelContent, FallbackValue='Looking in C:\\'}"></Label>
-        <Label x:Name="ProgressLabelSecondary" Grid.Row="3" Grid.Column="1" FontSize="12" VerticalAlignment="Top" Foreground="Red">Please Wait...</Label>
+
+        <Label x:Name="ProgressLabelSecondary" Grid.Row="3" Grid.Column="1" FontSize="12" VerticalAlignment="Top" Foreground="Red" Content="Please wait...">
+            <Label.Style>
+                <Style TargetType="Label">
+                    <Style.Triggers>
+                    <DataTrigger Binding="{Binding Path=IsSearchComplete}" Value="True" >
+                        <DataTrigger.EnterActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:1" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.EnterActions>
+                        <Setter Property="Visibility" Value="Hidden" />
+                        </DataTrigger>
+                    <DataTrigger Binding="{Binding Path=IsSearchComplete}" Value="False" >
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:1" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <Setter Property="Visibility" Value="Visible" />
+                      </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Label.Style>
+        </Label>
         
-        <ComboBox x:Name="FoundFilesComboBox" Grid.Row="5" Grid.Column="1" Visibility="Visible" SelectedIndex="-1">
+        <ComboBox x:Name="FoundFilesComboBox" Grid.Row="5" Grid.Column="1" Opacity="0">
             <ComboBox.Style>
                 <Style TargetType="ComboBox" >
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Path=IsFileFound}" Value="True" >
-                            <Setter Property="Opacity" Value="0" />
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:2" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=IsFileFound}" Value="False" >
+                            <Setter Property="Visibility" Value="Hidden" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>

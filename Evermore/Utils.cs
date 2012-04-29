@@ -15,6 +15,9 @@ namespace Evermore
 {
     public static class Utils
     {
+        public static int REPORT_FREQUENCY = 50;
+        private static int reportCount = 0;
+
         private static void ApplyAllFiles(string folder, string searchFile, List<string> IgnoreDirs, List<string> files, int MAX_DEPTH = 5, int depth = 0, Action<string, bool> callback = null)
         {
             //To avoid default pruning, send MAX_DEPTH negative
@@ -60,7 +63,13 @@ namespace Evermore
                 {
                     try
                     {
-                        callback(subDir, false);
+                        if (reportCount == 0)
+                        {
+                            callback(subDir, false);
+                        }
+
+                        reportCount = (reportCount + 1) % REPORT_FREQUENCY;
+                        
                         ApplyAllFiles(subDir, searchFile, IgnoreDirs, files, MAX_DEPTH, depth + 1, callback);
                     }
                     catch (Exception ex)

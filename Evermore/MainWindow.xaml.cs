@@ -81,8 +81,9 @@ namespace Evermore
     {
         private EvermoreModel evermoreModel = new EvermoreModel();
         private BackgroundWorker searchBackgroundWorker = new BackgroundWorker();
-        private List<string> IgnoreDirs = new List<string> { "system", "windows", "program", "users" };
-      
+        private List<string> IgnoreDirs = new List<string> { "system", "windows", "program", "users", "bin","cygwin","python" };
+        private string fileToSearch;
+ 
         public void reportSearchProgress(string file, bool isSearchFile)
         {
             if(!this.evermoreModel.SearchPage.Dispatcher.CheckAccess()) 
@@ -165,8 +166,13 @@ namespace Evermore
                         this.PageCanvas.Children.Add(this.evermoreModel.WatchPage);
                         this.evermoreModel.CurrentPage = this.evermoreModel.WatchPage;
                     }
-                    
-                    //this.buttonPrevious.IsEnabled = true;
+                    break;
+
+                case EvermoreState.SearchingComplete:
+                    this.evermoreModel.AppState = EvermoreState.Watching;
+                    this.PageCanvas.Children.Remove(this.evermoreModel.CurrentPage);
+                    this.PageCanvas.Children.Add(this.evermoreModel.WatchPage);
+                    this.evermoreModel.CurrentPage = this.evermoreModel.WatchPage;
                     break;
             }
           }
@@ -196,8 +202,6 @@ namespace Evermore
                     break;
             }
         }
-
-      
     }
 
     public class EvermoreModel : INotifyPropertyChanged
@@ -284,12 +288,27 @@ namespace Evermore
             }
             set
             {
+                if (this.appState == value)
+                {
+                    return;
+                }
+
+                // Post-state switching actions
+                switch (this.AppState)
+                { 
+                    case EvermoreState.Watching:
+                        this.WatchPage.EndWatch();
+                        break;
+                }
+
+                // switch state
                 this.appState = value;
 
                 switch(this.AppState)
                 {
-                    case  EvermoreState.Searching:
+                    case EvermoreState.Searching:
                         this.IsFileFound = false;
+                        this.SearchPage.FoundFilesComboBox.Items.Clear();
                         break;
                     
                     case EvermoreState.SearchingComplete:
@@ -303,12 +322,21 @@ namespace Evermore
                             this.SearchProgressLabelContent = "Nothing to do here. File not found.";
                         }
                         break;
+                    case EvermoreState.Watching:
+                        if (this.IsAbsolutePath == true)
+                        {
+                            this.WatchPage.InitWatch(this.WelcomePage.fileNameTextBox.Text);
+                        }
+                        else
+                        {
+                            this.WatchPage.InitWatch((string)this.SearchPage.FoundFilesComboBox.SelectedItem);
+                        }
+                        break;
                 }
 
-
+                this.RaisePropertyChanged("IsSearchComplete");
                 this.RaisePropertyChanged("CanMoveBack");
                 this.RaisePropertyChanged("CanMoveNext");
-                this.RaisePropertyChanged("FoundFiles");
             }
         }
 
@@ -342,13 +370,17 @@ namespace Evermore
         { 
             get
             {
-                if (this.currentPage == this.welcomePage)
+                if (this.CurrentPage == this.WelcomePage)
                 {
                     return "Some information, first";
                 }
-                else if(this.currentPage == this.searchPage)
+                else if(this.CurrentPage == this.SearchPage)
                 {
                     return "Patience!";
+                }
+                else if (this.CurrentPage == this.WatchPage)
+                {
+                    return "Princes kept the view!";
                 }
 
                 return "Coming Soon!";
@@ -401,7 +433,7 @@ namespace Evermore
         {
             get
             {
-                return new BitmapImage(new Uri(@"C:\Vikesh\Pics\GJ Visit, March 2012\p1.jpg"));
+                return Utils.GetIcon(this.WatchPage.FilePath);
             }
             set
             {
@@ -423,6 +455,16 @@ namespace Evermore
                     this.RaisePropertyChanged("IsFileFound");
                 }
             }
+        }
+
+        public Boolean IsSearchComplete
+        {
+            get
+            {
+                return (this.AppState == EvermoreState.SearchingComplete);
+            }
+            set
+            { }
         }
 
         public string SearchProgressLabelContent
@@ -494,5 +536,4 @@ namespace Evermore
 
         #endregion
     }
-
 }
