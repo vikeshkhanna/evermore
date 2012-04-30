@@ -50,10 +50,11 @@ namespace Evermore
 
         public void InitWatch(string _filePath)
         {
-            this.LastUpdatedLabel.Content = "Initializing";
             this.MinutesAgoLabel.Content = "Initializing";
             this.filePath = _filePath;
+            this.fileSize = 0;
             this.timer.Enabled = true;
+            updateUI(String.Empty);
         }
 
         public void EndWatch()
@@ -69,8 +70,6 @@ namespace Evermore
 
         private void timerElapsed(object sender, EventArgs eventArgs)
         {
-            this.fileInfo = new FileInfo(filePath);
-
             if (!this.LastUpdatedLabel.CheckAccess())
             {
                 this.LastUpdatedLabel.Dispatcher.BeginInvoke(
@@ -81,12 +80,12 @@ namespace Evermore
 
         private void updateUI(string toastUpdate)
         {
+            this.fileInfo = new FileInfo(this.filePath);
+
             if (this.fileInfo.Length != this.fileSize)
             {
-                Toast toast = new Toast();
-
                 this.fileSize = fileInfo.Length;
-                this.lastUpdateTime = DateTime.Now;
+                this.lastUpdateTime = this.fileInfo.LastWriteTime;
                 this.LastUpdatedLabel.Content = "Last updated at " + String.Format("{0}", DateTime.Now);
                 Debug.WriteLine("File Changed : " + fileInfo.Length);
             }
