@@ -10,6 +10,7 @@ using System.Threading;
 using System.Windows.Media;
 using System.Drawing;
 using System.Windows.Interop;
+using System.ComponentModel;
 
 namespace Evermore
 {
@@ -17,6 +18,8 @@ namespace Evermore
     {
         public static int REPORT_FREQUENCY = 50;
         private static int reportCount = 0;
+        public static Boolean cancelAsync;
+
 
         private static void ApplyAllFiles(string folder, string searchFile, List<string> IgnoreDirs, List<string> files, int MAX_DEPTH = 5, int depth = 0, Action<string, bool> callback = null)
         {
@@ -24,6 +27,12 @@ namespace Evermore
             if (depth == MAX_DEPTH)
             {
                 Debug.WriteLine("[Depth Limit] Ignoring folder : " + folder);
+                return;
+            }
+
+            if (cancelAsync)
+            {
+                Debug.WriteLine("[Cancel Worker] Cancelling Operation");
                 return;
             }
 
@@ -83,6 +92,7 @@ namespace Evermore
         public static List<string> SearchFileLocal(string _searchFile, List<string> _ignoreDirs, int MAX_DEPTH = -1, Action<string, bool> callback = null)
         {
             List<string> files = new List<string>();
+            cancelAsync = false;
 
             //@Stan R. suggested an improvement to handle floppy drives...
             //foreach (DriveInfo d in DriveInfo.GetDrives())
@@ -111,7 +121,8 @@ namespace Evermore
         public static List<string> SearchFileRemote(string _machine, string _username, string _password, string _searchFile, List<string> _ignoreDirs, int MAX_DEPTH = -1, Action<string, bool> callback = null)
         { 
             List<string> files = new List<string>();
-
+            cancelAsync = false;
+            
             var options = new ConnectionOptions { Username = _username, Password = _password };
             var scope = new ManagementScope(@"\\" + _machine + @"\root\cimv2", options);
             var queryString = "Select Name, Size, FreeSpace from Win32_LogicalDisk where DriveType=3"; var query = new ObjectQuery(queryString);
@@ -124,7 +135,7 @@ namespace Evermore
             {
                 Debug.WriteLine("{0} {2} {1}", item["Name"], item["FreeSpace"], item["Size"]);
                 string drive = item["Name"].ToString().Replace(":","");
-                ApplyAllFiles(@"\\" + _machine + @"\" + drive + @"$", _searchFile,_ignoreDirs,files,MAX_DEPTH, 0, callback);
+                ApplyAllFiles(@"\\" + _machine + @"\" + drive + @"$", _searchFile, _ignoreDirs, files, MAX_DEPTH, 0, callback);
             }
             
             foreach (var file in files)

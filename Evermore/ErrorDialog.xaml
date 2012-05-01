@@ -17,18 +17,14 @@
     </Window.Triggers>
     
     <Window.Resources>
+
+        <Style TargetType="Button" BasedOn="{StaticResource MetroDialogButton}">
+        </Style>
+        
         <DropShadowEffect x:Key="ErrorDialogDropShadow" ShadowDepth="0" BlurRadius="10" 
                           Opacity="0.6" Color="Black" />
         
-        <Style x:Key="MetroErrorButton" TargetType="Button" BasedOn="{StaticResource MetroButton}">
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect ShadowDepth="0" BlurRadius="10" Opacity="0.6" Color="Black" />
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Background" Value="White" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-        </Style>
+      
         
         <Style TargetType="TextBlock">
             <Setter Property="FontSize" Value="14" />
@@ -70,8 +66,8 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Button Style="{StaticResource MetroErrorButton}" Click="Button_Click">OK</Button>
-            <Button x:Name="MoreInfoButton" Grid.Row="0" Grid.Column="2"  Style="{StaticResource MetroErrorButton}" Click="MoreInfoButton_Click">Dafuq?</Button>
+            <Button IsDefault="True" IsCancel="True" Click="Button_Click">OK</Button>
+            <Button x:Name="MoreInfoButton" Grid.Row="0" Grid.Column="2" Click="MoreInfoButton_Click">Dafuq?</Button>
         </Grid>
         <Label Grid.Row="5" Grid.Column="1" Foreground="Red">
             <TextBlock x:Name="MoreInfoLabel" Visibility="Collapsed" Text="More Info. has not been implemented. We expect you to know how to read stack traces and compile the linux kernel.">
