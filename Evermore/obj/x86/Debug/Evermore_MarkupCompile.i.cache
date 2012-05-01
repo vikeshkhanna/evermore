@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-D:\vikesh\personal\evermore\Evermore\obj\x86\Debug\
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\
 Evermore
 none
 false
 DEBUG;TRACE
-D:\vikesh\personal\evermore\Evermore\App.xaml
-51283480839
+C:\Vikesh\Development\Evermore\Evermore\App.xaml
+8-755974546
 
-11-1889519771
-14714812033
-SearchPage.xaml;MainWindow.xaml;test.xaml;WatchPage.xaml;WelcomePage.xaml;
+14-1905795044
+15570217218
+ErrorDialog.xaml;SearchPage.xaml;MainWindow.xaml;SettingsWindow.xaml;test.xaml;ToastWindow.xaml;WatchPage.xaml;WelcomePage.xaml;
 
 True
 

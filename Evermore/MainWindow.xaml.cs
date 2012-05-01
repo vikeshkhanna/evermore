@@ -40,50 +40,18 @@ namespace Evermore
         Absolute
     }
 
-    class LocalFileArgs
-    { 
-        public string searchFile;
-        public List<string> ignoreDirs;
-        public int MAX_DEPTH;
-
-        public LocalFileArgs(string _searchFile, List<string> _ignoreDirs, int _max)
-        {
-            searchFile = _searchFile;
-            ignoreDirs = _ignoreDirs;
-            MAX_DEPTH = _max;
-        }
-    }
-
-    class RemoteFileArgs
-    {
-        public string machine;
-        public string username;
-        public string password;
-        public string searchFile;
-        public List<string> ignoreDirs;
-        public int MAX_DEPTH;
-
-        public  RemoteFileArgs(string _machine, string _username, string _password, string _searchFile, List<string> _ignoreDirs, int _max)
-        {
-            machine = _machine;
-            username = _username;
-            password = _password;
-            searchFile = _searchFile;
-            ignoreDirs = _ignoreDirs;
-            MAX_DEPTH = _max;
-        }
-    }
-
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        private EvermoreModel evermoreModel = new EvermoreModel();
+        private EvermoreModel evermoreModel;
         private BackgroundWorker searchBackgroundWorker = new BackgroundWorker();
-        private List<string> IgnoreDirs = new List<string> { "system", "windows", "program", "users", "bin","cygwin","python" };
+        //private List<string> IgnoreDirs = new List<string> { "system", "windows", "program", "users", "bin","cygwin","python" };
+        private List<string> IgnoreDirs;
         private string fileToSearch;
- 
+        private int maxDepth;
+
         public void reportSearchProgress(string file, bool isSearchFile)
         {
             if(!this.evermoreModel.SearchPage.Dispatcher.CheckAccess()) 
@@ -97,6 +65,10 @@ namespace Evermore
             {
                 this.evermoreModel.IsFileFound = true;
                 this.evermoreModel.SearchPage.FoundFilesComboBox.Items.Add(file);
+                ToastWindow toast = new ToastWindow(this, "[" + this.evermoreModel.SearchPage.FoundFilesComboBox.Items.Count
+                    + "] " + "New file found!\n" + file);
+
+                toast.RaiseToast();
                 Debug.WriteLine("[Success] Received file : " + file);
             }
             else
@@ -109,11 +81,27 @@ namespace Evermore
         public MainWindow()
         {
             InitializeComponent();
+            this.evermoreModel = new EvermoreModel(this);
             this.PageCanvas.Children.Add(this.evermoreModel.WelcomePage);
             this.evermoreModel.CurrentPage = this.evermoreModel.WelcomePage;
             this.DataContext = this.evermoreModel;
             this.searchBackgroundWorker.DoWork +=new DoWorkEventHandler(searchBackgroundWorker_DoWork);
             this.searchBackgroundWorker.RunWorkerCompleted +=new RunWorkerCompletedEventHandler(searchBackgroundWorker_RunWorkerCompleted);
+            updateSettings();
+        }
+
+        public void HandleError(Exception ex)
+        {
+            Utils.ShowErrorDialog(ex.Message);
+
+            if (this.evermoreModel.CurrentPage != this.evermoreModel.WelcomePage)
+            {
+                this.PageCanvas.Children.Remove(this.evermoreModel.CurrentPage);
+                this.PageCanvas.Children.Add(this.evermoreModel.WelcomePage);
+                this.evermoreModel.CurrentPage = this.evermoreModel.WelcomePage;
+            }
+            
+            this.evermoreModel.AppState = EvermoreState.Welcome;
         }
 
         #region Properties
@@ -129,16 +117,27 @@ namespace Evermore
         #region Background Worker
 
         private void searchBackgroundWorker_DoWork(object sender, DoWorkEventArgs args)
-        {   
-            if(this.evermoreModel.IsMachineLocal)
+        {
+            if (this.evermoreModel.IsMachineLocal)
             {
                 LocalFileArgs localFileArgs = (LocalFileArgs)args.Argument;
                 List<string> files = Utils.SearchFileLocal(localFileArgs.searchFile, localFileArgs.ignoreDirs, localFileArgs.MAX_DEPTH, this.reportSearchProgress);
             }
+            else
+            {
+                RemoteFileArgs remoteFileArgs = (RemoteFileArgs)args.Argument;
+                List<string> files = Utils.SearchFileRemote(remoteFileArgs.machine, remoteFileArgs.username, remoteFileArgs.password,
+                    remoteFileArgs.searchFile, this.IgnoreDirs, remoteFileArgs.MAX_DEPTH, this.reportSearchProgress);
+            }
         }
 
         private void searchBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs args)
-        { 
+        {
+            if (args.Error != null)
+            {
+                this.HandleError(args.Error);
+                return;
+            }
             this.evermoreModel.AppState = EvermoreState.SearchingComplete;
         }
 
@@ -150,29 +149,30 @@ namespace Evermore
             switch (this.evermoreModel.AppState)
             { 
                 case EvermoreState.Welcome:
-                    this.PageCanvas.Children.Remove(this.evermoreModel.CurrentPage);
-                    
                     if (!this.evermoreModel.IsAbsolutePath)
                     {
                         this.evermoreModel.AppState = EvermoreState.Searching;
-                        this.PageCanvas.Children.Add(this.evermoreModel.SearchPage);
-                        this.evermoreModel.CurrentPage = this.evermoreModel.SearchPage;
-                        this.searchBackgroundWorker.RunWorkerAsync(new LocalFileArgs(this.evermoreModel.WelcomePage.fileNameTextBox.Text, 
-                            this.IgnoreDirs, 5));
+
+                        if (this.evermoreModel.IsMachineLocal)
+                        {
+                            this.searchBackgroundWorker.RunWorkerAsync(new LocalFileArgs(this.evermoreModel.WelcomePage.fileNameTextBox.Text,
+                              this.IgnoreDirs, this.maxDepth));
+                        }
+                        else
+                        {
+                            this.searchBackgroundWorker.RunWorkerAsync(new RemoteFileArgs(this.evermoreModel.WelcomePage.machineNameTextBox.Text, 
+                                this.evermoreModel.WelcomePage.usernameTextBox.Text, this.evermoreModel.WelcomePage.passwordTextBox.Password,
+                                this.evermoreModel.WelcomePage.fileNameTextBox.Text, this.IgnoreDirs, this.maxDepth));
+                        }
                     }
                     else
                     {
                         this.evermoreModel.AppState = EvermoreState.Watching;
-                        this.PageCanvas.Children.Add(this.evermoreModel.WatchPage);
-                        this.evermoreModel.CurrentPage = this.evermoreModel.WatchPage;
                     }
                     break;
 
                 case EvermoreState.SearchingComplete:
                     this.evermoreModel.AppState = EvermoreState.Watching;
-                    this.PageCanvas.Children.Remove(this.evermoreModel.CurrentPage);
-                    this.PageCanvas.Children.Add(this.evermoreModel.WatchPage);
-                    this.evermoreModel.CurrentPage = this.evermoreModel.WatchPage;
                     break;
             }
           }
@@ -182,24 +182,36 @@ namespace Evermore
             switch (this.evermoreModel.AppState)
             { 
                 case EvermoreState.Searching:
-                    this.PageCanvas.Children.Remove(this.evermoreModel.CurrentPage);
-                    this.PageCanvas.Children.Add(this.evermoreModel.WelcomePage);
-                    this.evermoreModel.CurrentPage = this.evermoreModel.WelcomePage;
-                    this.evermoreModel.AppState = EvermoreState.Welcome;
-                    //this.buttonPrevious.IsEnabled = false;
+                     this.evermoreModel.AppState = EvermoreState.Welcome;
                     break;
                 case EvermoreState.Watching:
-                    this.PageCanvas.Children.Remove(this.evermoreModel.CurrentPage);
-                    this.PageCanvas.Children.Add(this.evermoreModel.WelcomePage);
-                    this.evermoreModel.CurrentPage = this.evermoreModel.WelcomePage;
                     this.evermoreModel.AppState = EvermoreState.Welcome;
                     break;
                 case EvermoreState.SearchingComplete:
-                    this.PageCanvas.Children.Remove(this.evermoreModel.CurrentPage);
-                    this.PageCanvas.Children.Add(this.evermoreModel.WelcomePage);
-                    this.evermoreModel.CurrentPage = this.evermoreModel.WelcomePage;
                     this.evermoreModel.AppState = EvermoreState.Welcome;
                     break;
+            }
+        }
+
+        private void SettingsLink_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsWindow settingsWindow = new SettingsWindow();
+            settingsWindow.ShowDialog();
+            updateSettings();
+        }
+
+        private void updateSettings()
+        {
+            this.maxDepth = Properties.Settings.Default.MAX_DEPTH;
+            List<string> dirs = Properties.Settings.Default.IgnoreDirs.Split('\\').ToList<string>();
+            this.IgnoreDirs = new List<string>();
+
+            foreach (string dir in dirs)
+            {
+                if (Utils.IsValidIgnoreDir(dir))
+                {
+                    this.IgnoreDirs.Add(dir);
+                }
             }
         }
     }
@@ -209,7 +221,7 @@ namespace Evermore
         private EvermoreState appState;
         private WelcomePage welcomePage = new WelcomePage();
         private SearchPage searchPage = new SearchPage();
-        private WatchPage watchPage = new WatchPage();
+        private WatchPage watchPage;
         private UserControl currentPage;
         private SearchMode searchMode;
         private PathMode pathMode;
@@ -217,6 +229,19 @@ namespace Evermore
         private Boolean isMachineLocal = false;
         private Boolean isFileFound = false;
         private string searchProgressLabelContent;
+        private MainWindow parentWindow;
+
+        public EvermoreModel()
+        { 
+        
+        }
+
+        public EvermoreModel(MainWindow _parentWindow)
+        {
+            this.parentWindow = _parentWindow;
+            this.watchPage = new WatchPage(_parentWindow);
+        }
+
 
         #region Properties
 
@@ -306,7 +331,18 @@ namespace Evermore
 
                 switch(this.AppState)
                 {
+                    case EvermoreState.Welcome:
+                        this.parentWindow.PageCanvas.Children.Remove(this.CurrentPage);
+                        this.parentWindow.PageCanvas.Children.Add(this.WelcomePage);
+                        this.CurrentPage = this.WelcomePage;
+                 
+                        break;
+
                     case EvermoreState.Searching:
+                        this.SearchPage.SearchPageHeader.Content = "Searching " + this.WelcomePage.fileNameTextBox.Text;
+                        this.parentWindow.PageCanvas.Children.Remove(this.CurrentPage);
+                        this.parentWindow.PageCanvas.Children.Add(this.SearchPage);
+                        this.CurrentPage = this.SearchPage;
                         this.IsFileFound = false;
                         this.SearchPage.FoundFilesComboBox.Items.Clear();
                         break;
@@ -321,16 +357,25 @@ namespace Evermore
                         {
                             this.SearchProgressLabelContent = "Nothing to do here. File not found.";
                         }
+
+                        ToastWindow toast = new ToastWindow(this.parentWindow, "Searching Complete!");
+                        toast.RaiseToast();
+
                         break;
                     case EvermoreState.Watching:
-                        if (this.IsAbsolutePath == true)
-                        {
-                            this.WatchPage.InitWatch(this.WelcomePage.fileNameTextBox.Text);
-                        }
-                        else
-                        {
-                            this.WatchPage.InitWatch((string)this.SearchPage.FoundFilesComboBox.SelectedItem);
-                        }
+                         this.parentWindow.PageCanvas.Children.Remove(this.CurrentPage);
+                         this.parentWindow.PageCanvas.Children.Add(this.WatchPage);
+                         this.CurrentPage = this.WatchPage;
+
+                         if (this.IsAbsolutePath == true)
+                         {
+                             this.WatchPage.InitWatch(this.WelcomePage.fileNameTextBox.Text);
+                         }
+                         else
+                         {
+                             this.WatchPage.InitWatch((string)this.SearchPage.FoundFilesComboBox.SelectedItem);
+                         }
+
                         break;
                 }
 
@@ -535,5 +580,39 @@ namespace Evermore
         }
 
         #endregion
+    }
+
+    class LocalFileArgs
+    {
+        public string searchFile;
+        public List<string> ignoreDirs;
+        public int MAX_DEPTH;
+
+        public LocalFileArgs(string _searchFile, List<string> _ignoreDirs, int _max = 5)
+        {
+            searchFile = _searchFile;
+            ignoreDirs = _ignoreDirs;
+            MAX_DEPTH = _max;
+        }
+    }
+
+    class RemoteFileArgs
+    {
+        public string machine;
+        public string username;
+        public string password;
+        public string searchFile;
+        public List<string> ignoreDirs;
+        public int MAX_DEPTH;
+
+        public RemoteFileArgs(string _machine, string _username, string _password, string _searchFile, List<string> _ignoreDirs, int _max = 5)
+        {
+            machine = _machine;
+            username = _username;
+            password = _password;
+            searchFile = _searchFile;
+            ignoreDirs = _ignoreDirs;
+            MAX_DEPTH = _max;
+        }
     }
 }

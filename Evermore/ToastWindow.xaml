@@ -1,0 +1,73 @@
+﻿<Window x:Class="Evermore.ToastWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ToastWindow" Height="Auto" MaxHeight="200" Width="300" WindowStyle="None" ResizeMode="NoResize" 
+        Closing="Window_Closing" MouseDown="Window_MouseDown" x:Name="Toast" Topmost="True"
+        AllowsTransparency="True" ShowInTaskbar="False">
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Window.Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="{Binding Path=AnimationTime}" />
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
+    <Window.Style>
+        <Style TargetType="Window">
+            <Style.Triggers>
+                <Trigger Property="Window.IsMouseOver" Value="True">
+                    <Setter Property="Window.Cursor" Value="Hand" />
+                    <Setter Property="Padding" Value="20" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+    </Window.Style>
+    
+    <Grid>
+        <Grid.Style>
+            <Style TargetType="Grid">
+                <Setter Property="Effect" Value="{StaticResource DropShadowEffect}" />
+            </Style>
+        </Grid.Style>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                <GradientStop Color="#999999" Offset="0" />
+                <GradientStop Color="Black" Offset="1.9" />
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="0" Grid.Column="0" Background="DarkRed" Grid.ColumnSpan="3">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Effect" Value="{StaticResource DropShadowEffect}" />
+                </Style>
+            </Grid.Style>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="10" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.Column="0"  Foreground="White">Evermore Notification</Label>
+        </Grid>
+        <Image Grid.Row="1" Grid.Column="0" Source="/Evermore;component/Images/toast.jpg" Height="64" Width="64" 
+               VerticalAlignment="Center" Margin="10" />
+            <Label Grid.Row="1" Grid.Column="2" VerticalAlignment="Center">
+                <TextBlock x:Name="ToastMessage" TextWrapping="Wrap" Foreground="White">
+                </TextBlock>
+            </Label>
+    </Grid>
+</Window>

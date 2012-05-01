@@ -22,6 +22,7 @@ namespace Evermore
         public SearchPage()
         {
             InitializeComponent();
+
         }
     }
 }

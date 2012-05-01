@@ -14,45 +14,32 @@
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
         
-            <Style x:Key="TextBoxStyle">
-            <Style.Triggers>
-                <Trigger Property="Control.IsFocused" Value="True">
-                    <Setter Property="Control.Effect" Value="{StaticResource DropShadowEffect}" />
-                </Trigger>
-            </Style.Triggers>
-            <Setter Property="Control.FontSize" Value="14" />
-            <Setter Property="Control.Height" Value="Auto" />
-            <Setter Property="Control.VerticalAlignment" Value="Stretch" />
-            <Setter Property="Control.HorizontalAlignment" Value="Stretch" />
-            <Setter Property="Control.Width" Value="Auto" />
-        </Style>
-        
         <Style TargetType="CheckBox">
             <Setter Property="FontSize" Value="14" />
             <Setter Property="FontFamily" Value="Segoe" />
         </Style>
-        
         <Style BasedOn="{StaticResource TextBoxStyle}" TargetType="TextBox">
             <Style.Triggers>
                 <MultiTrigger>
-                        <MultiTrigger.Conditions>
-                            <Condition Property="Text" Value="" />
-                            <Condition Property="IsFocused" Value="False" />
-                            <Condition Property="IsEnabled" Value="True" />
+                    <MultiTrigger.Conditions>
+                        <Condition Property="Text" Value="" />
+                        <Condition Property="IsFocused" Value="False" />
+                        <Condition Property="IsEnabled" Value="True" />
                     </MultiTrigger.Conditions>
                     <Setter Property="Effect" Value="{StaticResource DropShadowMandatoryInput}"/>
                 </MultiTrigger>
-                    
+
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
                         <Condition Value="True" Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text, Converter={StaticResource EmptyStringConverter}}" />
                         <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsFocused}" Value="False" />
                         <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled}" Value="True" />
-                    </MultiDataTrigger.Conditions> 
+                    </MultiDataTrigger.Conditions>
                     <Setter Property="Effect" Value="{StaticResource DropShadowValidInput}"/>
                 </MultiDataTrigger>
             </Style.Triggers>
         </Style>
+
 
         <Style BasedOn="{StaticResource TextBoxStyle}" TargetType="PasswordBox">
         </Style>
@@ -120,9 +107,10 @@
             </Grid.ColumnDefinitions>
             <Label Grid.Row="0" Grid.Column="0">Domain\Username:</Label>
             <TextBox x:Name="usernameTextBox" Grid.Column="2" 
-                     IsEnabled="{Binding ElementName=machineLocationCheckBox, Path=IsChecked, Converter={StaticResource BoolInverter}}" />
+                     IsEnabled="{Binding ElementName=machineLocationCheckBox, Path=IsChecked, Converter={StaticResource BoolInverter}}" 
+                     Text="fareast\idcdlslb" />
             <Label Grid.Row="2" Grid.Column="0">Password :</Label>
-            <PasswordBox x:Name="passwordTextBox" Grid.Row="2" Grid.Column="2"
+            <PasswordBox x:Name="passwordTextBox" Grid.Row="2" Grid.Column="2" Password="OntoCloud!!!"
                          IsEnabled="{Binding ElementName=machineLocationCheckBox, Path=IsChecked, Converter={StaticResource BoolInverter}}" />
         </Grid>
     </Grid>

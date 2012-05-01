@@ -6,97 +6,25 @@
         Height="Auto" Width="525">
     
     <Window.Resources>
-        <Style TargetType="Button" x:Key="MetroButton">
-            <Setter Property="FontFamily" Value="Segoe" />
-            <Setter Property="FontSize" Value="24" />
-            <Setter Property="Width" Value="Auto" />
-            <Setter Property="Height" Value="Auto" />
-            <Setter Property="Padding" Value="100,10,10,10" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="OverridesDefaultStyle" Value="True"/>
-
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect ShadowDepth="0" BlurRadius="10" Color="White"/>
-                </Setter.Value>
-            </Setter>  
-
-                <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <ControlTemplate.Resources>
-                            <Style x:Key="ShadowStyle">
-                                <Setter Property="Control.Foreground" Value="Black" />
-                            </Style>
-                        </ControlTemplate.Resources>
-                            <Border x:Name="MetroButtonBorder" Padding="2,2" BorderThickness="1" BorderBrush="DarkGray" 
-                                    CornerRadius="0" Background="{TemplateBinding Background}">
-                                <Grid>
-                                <ContentPresenter x:Name="MetroButtonContentPresenter" HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                                      Width="Auto" Height="Auto" Margin="10,0,10,5" Style="{StaticResource ShadowStyle}">
-                                    <ContentPresenter.RenderTransform>
-                                            <TranslateTransform X="1.0" Y="1.0" />
-                                        </ContentPresenter.RenderTransform>
-                                    </ContentPresenter>
-                            </Grid>
-                            </Border>
-
-                        <!--Triggers for MetroButton -->
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter  TargetName="MetroButtonBorder" Property="Background" Value="AliceBlue" />
-                            </Trigger>
-                            
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Effect">
-                                    <Setter.Value>
-                                        <DropShadowEffect ShadowDepth="0" BlurRadius="10" Color="Tomato"/>
-                                    </Setter.Value>
-                                </Setter>
-                                <Setter Property="Background" Value="LightGray" />
-                                <Setter Property="Cursor" Value="Hand" />
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Opacity" Value="0.2" />
-                                <Setter Property="Background" Value="AliceBlue" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="10"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
        
        
         <StackPanel x:Name="PageCanvas" Grid.Row="1" VerticalAlignment="Center"></StackPanel>
 
-        <Label x:Name="labelError" Grid.Row="2" Foreground="White" Visibility="Hidden" Padding="10,5,5,5" Content="An error occured">
-            <Label.Style>
-                <Style TargetType="{x:Type Label}">
-                    <Setter Property="Background" Value="#360000" />
-                    <Setter Property="Effect">
-                        <Setter.Value>
-                            <DropShadowEffect ShadowDepth="0" BlurRadius="10" Color="Black" />
-                        </Setter.Value>
-                    </Setter>
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True" >
-                            <Setter Property="Background" Value="Black" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Label.Style>
+        <Label x:Name="labelError" Grid.Row="2" Foreground="White" Visibility="Visible" Padding="10,5,5,5">
+            <Hyperlink x:Name="SettingsLink" Click="SettingsLink_Click">Settings</Hyperlink>
         </Label>
 
-        <Grid Grid.Row="3" x:Name="ControlPanel" DockPanel.Dock="Bottom" Height="80">
+        <Grid Grid.Row="4" x:Name="ControlPanel" DockPanel.Dock="Bottom" Height="80">
             <Grid.Background>
                 <SolidColorBrush x:Name="ControlPanelBrush" Color="BlueViolet"></SolidColorBrush>
             </Grid.Background>

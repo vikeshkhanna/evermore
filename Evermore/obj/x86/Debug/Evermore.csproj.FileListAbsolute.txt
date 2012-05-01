@@ -66,3 +66,13 @@ D:\vikesh\personal\evermore\Evermore\obj\x86\Debug\Evermore.g.resources
 D:\vikesh\personal\evermore\Evermore\obj\x86\Debug\Evermore.Properties.Resources.resources
 D:\vikesh\personal\evermore\Evermore\obj\x86\Debug\GenerateResource.read.1.tlog
 D:\vikesh\personal\evermore\Evermore\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Vikesh\Development\Evermore\Evermore\bin\Debug\Hardcodet.Wpf.TaskbarNotification.dll
+C:\Vikesh\Development\Evermore\Evermore\bin\Debug\Hardcodet.Wpf.TaskbarNotification.pdb
+C:\Vikesh\Development\Evermore\Evermore\bin\Debug\Hardcodet.Wpf.TaskbarNotification.xml
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\ToastWindow.baml
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\ToastWindow.g.cs
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\ErrorDialog.baml
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\ErrorDialog.g.cs
+C:\Vikesh\Development\Evermore\Evermore\bin\Debug\Evermore.exe.config
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\SettingsWindow.baml
+C:\Vikesh\Development\Evermore\Evermore\obj\x86\Debug\SettingsWindow.g.cs

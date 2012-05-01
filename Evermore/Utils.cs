@@ -53,7 +53,7 @@ namespace Evermore
                 {
                     if (subDir.ToLower().Contains(ignorable))
                     {
-                        Debug.WriteLine("[Ignored] Ignoring dir : " + subDir);
+                        Debug.WriteLine("[Ignored] Ignoring dir : " + subDir + " - " + "'" + ignorable + "'");
                         searchDir = false;
                         break;
                     }
@@ -108,7 +108,7 @@ namespace Evermore
             return files;
         }
 
-        public static List<string> SearchFileRemote(string _machine, string _username, string _password, string _searchFile, List<string> _ignoreDirs, int MAX_DEPTH = -1)
+        public static List<string> SearchFileRemote(string _machine, string _username, string _password, string _searchFile, List<string> _ignoreDirs, int MAX_DEPTH = -1, Action<string, bool> callback = null)
         { 
             List<string> files = new List<string>();
 
@@ -124,14 +124,14 @@ namespace Evermore
             {
                 Debug.WriteLine("{0} {2} {1}", item["Name"], item["FreeSpace"], item["Size"]);
                 string drive = item["Name"].ToString().Replace(":","");
-                ApplyAllFiles(@"\\" + _machine + @"\" + drive + @"$", _searchFile,_ignoreDirs,files,MAX_DEPTH);
+                ApplyAllFiles(@"\\" + _machine + @"\" + drive + @"$", _searchFile,_ignoreDirs,files,MAX_DEPTH, 0, callback);
             }
             
             foreach (var file in files)
             {
                 Debug.WriteLine(file);
             }
-
+           
             return files;
         }
 
@@ -153,6 +153,18 @@ namespace Evermore
 
             return icon;
         }
+
+        public static void ShowErrorDialog(string errorString)
+        {
+            ErrorDialog errorDialog = new ErrorDialog(errorString);
+            errorDialog.ShowDialog();
+        }
+
+        public static Boolean IsValidIgnoreDir(string dir)
+        {
+            return (!dir.Contains(@"\") && !String.IsNullOrEmpty(dir.Trim()));
+        }
+
     }
 }
     

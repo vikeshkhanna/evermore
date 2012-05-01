@@ -20,7 +20,7 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="40" />
         </Grid.ColumnDefinitions>
-        <Label Grid.Row="0" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource PageHeaderLabelStyle}">Searching</Label>
+        <Label x:Name="SearchPageHeader" Grid.Row="0" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource PageHeaderLabelStyle}">Searching</Label>
         <Label x:Name="ProgressLabel" Grid.Row="2" Grid.Column="1" FontSize="16" VerticalAlignment="Top" Content="{Binding SearchProgressLabelContent, FallbackValue='Looking in C:\\'}"></Label>
 
         <Label x:Name="ProgressLabelSecondary" Grid.Row="3" Grid.Column="1" FontSize="12" VerticalAlignment="Top" Foreground="Red" Content="Please wait...">
