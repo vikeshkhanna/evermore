@@ -87,6 +87,7 @@ namespace Evermore
             this.DataContext = this.evermoreModel;
             this.searchBackgroundWorker.DoWork +=new DoWorkEventHandler(searchBackgroundWorker_DoWork);
             this.searchBackgroundWorker.RunWorkerCompleted +=new RunWorkerCompletedEventHandler(searchBackgroundWorker_RunWorkerCompleted);
+            this.searchBackgroundWorker.WorkerSupportsCancellation = true;
             updateSettings();
         }
 
@@ -129,6 +130,11 @@ namespace Evermore
                 List<string> files = Utils.SearchFileRemote(remoteFileArgs.machine, remoteFileArgs.username, remoteFileArgs.password,
                     remoteFileArgs.searchFile, this.IgnoreDirs, remoteFileArgs.MAX_DEPTH, this.reportSearchProgress);
             }
+
+            if (((BackgroundWorker)sender).CancellationPending == true)
+            {
+                args.Cancel = true;
+            }
         }
 
         private void searchBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs args)
@@ -138,8 +144,12 @@ namespace Evermore
                 this.HandleError(args.Error);
                 return;
             }
-            this.evermoreModel.AppState = EvermoreState.SearchingComplete;
-        }
+
+            if (!args.Cancelled)
+            {
+                this.evermoreModel.AppState = EvermoreState.SearchingComplete;
+            }
+       }
 
         #endregion
 
@@ -183,6 +193,13 @@ namespace Evermore
             { 
                 case EvermoreState.Searching:
                      this.evermoreModel.AppState = EvermoreState.Welcome;
+
+                     if (this.searchBackgroundWorker.IsBusy)
+                     {
+                         this.searchBackgroundWorker.CancelAsync();
+                         Utils.cancelAsync = true;
+                     }
+                    
                     break;
                 case EvermoreState.Watching:
                     this.evermoreModel.AppState = EvermoreState.Welcome;
@@ -363,10 +380,6 @@ namespace Evermore
 
                         break;
                     case EvermoreState.Watching:
-                         this.parentWindow.PageCanvas.Children.Remove(this.CurrentPage);
-                         this.parentWindow.PageCanvas.Children.Add(this.WatchPage);
-                         this.CurrentPage = this.WatchPage;
-
                          if (this.IsAbsolutePath == true)
                          {
                              this.WatchPage.InitWatch(this.WelcomePage.fileNameTextBox.Text);
@@ -376,7 +389,12 @@ namespace Evermore
                              this.WatchPage.InitWatch((string)this.SearchPage.FoundFilesComboBox.SelectedItem);
                          }
 
-                        break;
+                         this.parentWindow.PageCanvas.Children.Remove(this.CurrentPage);
+                         this.parentWindow.PageCanvas.Children.Add(this.WatchPage);
+                         this.CurrentPage = this.WatchPage;
+                         this.WatchPage.StartWatch();
+
+                         break;
                 }
 
                 this.RaisePropertyChanged("IsSearchComplete");
@@ -389,7 +407,7 @@ namespace Evermore
         {
             get
             {
-                if (this.AppState == EvermoreState.Welcome || this.AppState == EvermoreState.Searching)
+                if (this.AppState == EvermoreState.Welcome)
                 {
                     return false;
                 }
@@ -402,7 +420,7 @@ namespace Evermore
         {
             get
             {
-                if (this.AppState == EvermoreState.Watching || this.AppState == EvermoreState.Searching)
+                if (this.AppState == EvermoreState.Watching || (this.AppState == EvermoreState.Searching && !this.IsFileFound))
                 {
                     return false;
                 }
@@ -498,6 +516,7 @@ namespace Evermore
                 {
                     this.isFileFound = value;
                     this.RaisePropertyChanged("IsFileFound");
+                    this.RaisePropertyChanged("CanMoveNext");
                 }
             }
         }

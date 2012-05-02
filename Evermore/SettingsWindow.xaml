@@ -23,17 +23,10 @@
         
         <DropShadowEffect x:Key="SettingsDropShadow" ShadowDepth="0" BlurRadius="10" 
                           Opacity="0.6" Color="Black" />
-        
-        <Style TargetType="Button" BasedOn="{StaticResource MetroButton}">
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect ShadowDepth="0" BlurRadius="10" Opacity="0.6" Color="Black" />
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Background" Value="White" />
-            <Setter Property="VerticalAlignment" Value="Center" />
+
+        <Style TargetType="Button" BasedOn="{StaticResource MetroDialogButton}">
         </Style>
-        
+
         <Style TargetType="TextBlock">
             <Setter Property="FontSize" Value="14" />
             <Setter Property="TextWrapping" Value="Wrap" />
@@ -74,10 +67,10 @@
         </Grid.ColumnDefinitions>
 
         <Label Grid.Row="1" Grid.Column="1">Maximum Recusion Depth</Label>
-        <TextBox x:Name="MaxRecusionDepth" Grid.Row="1" Grid.Column="3" Width="Auto" Height="Auto" TextAlignment="Center"></TextBox>
+        <TextBox x:Name="MaxRecusionDepth" Grid.ColumnSpan="3" Grid.Row="1" Grid.Column="3" Width="Auto" Height="Auto" TextAlignment="Center"></TextBox>
         <Label Grid.Row="3" Grid.Column="1">Ignore directory name like</Label>
-        <TextBox x:Name="IgnoreDirectory" Grid.Row="3" Grid.Column="3" Width="Auto" Height="Auto" TextAlignment="Center"></TextBox>
-        <Button x:Name="AddDir" Grid.Row="3" Grid.Column="5" Click="AddDir_Click">Add</Button>
+        <TextBox x:Name="IgnoreDirectory" Grid.ColumnSpan="3" Grid.Row="3" Grid.Column="3" Width="Auto" Height="Auto" TextAlignment="Center"></TextBox>
+        <Button x:Name="AddDir" Grid.Row="5" Grid.Column="5" Click="AddDir_Click" VerticalAlignment="Top">Add</Button>
         <ListView x:Name="IgnoreDirsList" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3" Height="150"></ListView>
         <Button x:Name="RemoveDir" Grid.Row="5" Grid.Column="5" VerticalAlignment="Bottom" Click="RemoveDir_Click">Remove</Button>
         <Grid Grid.Row="7" Grid.Column="1">
@@ -89,8 +82,8 @@
                 <ColumnDefinition Width="20" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Button x:Name="SaveSettings" Grid.Row="0" Grid.Column="0" Click="SaveSettings_Click">Save</Button>
-            <Button x:Name="CancelSettings" Grid.Row="0" Grid.Column="2" Click="CancelSettings_Click">Cancel</Button>
+            <Button x:Name="SaveSettings" Grid.Row="0" Grid.Column="0" IsDefault="True" Click="SaveSettings_Click">Save</Button>
+            <Button x:Name="CancelSettings" Grid.Row="0" Grid.Column="2" IsCancel="True" Click="CancelSettings_Click">Cancel</Button>
 
         </Grid>
     </Grid>

@@ -30,6 +30,8 @@ namespace Evermore
         private DateTime lastUpdateTime;
         private Window parentWindow;
         private Boolean errorDetected = false;
+        private Boolean firstTime = false;
+
         #region Properties
         public string FilePath
         {
@@ -53,10 +55,15 @@ namespace Evermore
         {
             this.MinutesAgoLabel.Content = "Initializing";
             this.filePath = _filePath;
-            this.fileSize = 0;
-            this.timer.Enabled = true;
+            this.fileSize = -1;
+            this.timer.Enabled = false;
             this.errorDetected = false;
-            updateUI();
+            this.firstTime = false;
+        }
+
+        public void StartWatch()
+        {
+            this.timer.Start();
         }
 
         public void EndWatch()
@@ -86,19 +93,32 @@ namespace Evermore
             {
                 this.fileInfo = new FileInfo(this.filePath);
 
-                if (this.fileInfo.Length != this.fileSize)
+                if (this.lastUpdateTime != this.fileInfo.LastWriteTime)
                 {
                     this.fileSize = fileInfo.Length;
                     this.lastUpdateTime = this.fileInfo.LastWriteTime;
                     this.LastUpdatedLabel.Content = "Last updated at " + String.Format("{0}", DateTime.Now);
                     Debug.WriteLine("File Changed : " + fileInfo.Length);
+                    
                     //Display Toast
-                    ToastWindow toast = new ToastWindow(this.parentWindow, "File haz been updated!");
+
+                    ToastWindow toast;
+
+                    if (this.firstTime)
+                    {
+                        toast = new ToastWindow(this.parentWindow, "Relax gentlemen, we are watching your file.");
+                    }
+                    else
+                    {
+                        toast = new ToastWindow(this.parentWindow, "File haz been updated!\nNew Size - " + fileInfo.Length + " bytes.");
+                    }
+
                     toast.RaiseToast();
+                    this.firstTime = false;
                 }
                 else
                 {
-                    Debug.WriteLine("File size same : " + fileInfo.Length);
+                    //Debug.WriteLine("File size same : " + fileInfo.Length);
                 }
 
                 TimeSpan diff = DateTime.Now - this.lastUpdateTime;
@@ -119,6 +139,7 @@ namespace Evermore
                     this.EndWatch();
                     this.errorDetected = true;
                     ((MainWindow)this.parentWindow).HandleError(ex);
+                    
                 }
             }
         }
