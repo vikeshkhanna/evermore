@@ -58,7 +58,7 @@ namespace Evermore
             this.fileSize = -1;
             this.timer.Enabled = false;
             this.errorDetected = false;
-            this.firstTime = false;
+            this.firstTime = true;
         }
 
         public void StartWatch()
@@ -107,6 +107,7 @@ namespace Evermore
                     if (this.firstTime)
                     {
                         toast = new ToastWindow(this.parentWindow, "Relax gentlemen, we are watching your file.");
+                        this.firstTime = false;
                     }
                     else
                     {
@@ -114,7 +115,6 @@ namespace Evermore
                     }
 
                     toast.RaiseToast();
-                    this.firstTime = false;
                 }
                 else
                 {
