@@ -168,8 +168,9 @@ namespace Evermore
         public static void ShowErrorDialog(string errorString)
         {
             ErrorDialog errorDialog = new ErrorDialog(errorString);
+            errorDialog.Activate();
             errorDialog.ShowDialog();
-        }
+         }
 
         public static Boolean IsValidIgnoreDir(string dir)
         {

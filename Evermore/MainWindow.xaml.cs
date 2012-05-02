@@ -65,11 +65,17 @@ namespace Evermore
             {
                 this.evermoreModel.IsFileFound = true;
                 this.evermoreModel.SearchPage.FoundFilesComboBox.Items.Add(file);
-                ToastWindow toast = new ToastWindow(this, "[" + this.evermoreModel.SearchPage.FoundFilesComboBox.Items.Count
-                    + "] " + "New file found!\n" + file);
+                this.evermoreModel.FileFoundCount += 1;
+                
+                // DO not riase toast if more than 10 files have already been found - UI hang issue
+                if (this.evermoreModel.FileFoundCount <= 10)
+                {
+                    ToastWindow toast = new ToastWindow(this, "[" + this.evermoreModel.FileFoundCount
+                        + "] " + "New file found!\n" + file);
 
-                toast.RaiseToast();
-                Debug.WriteLine("[Success] Received file : " + file);
+                    toast.RaiseToast();
+                    Debug.WriteLine("[Success] Received file : " + file);
+                }
             }
             else
             {
@@ -247,6 +253,7 @@ namespace Evermore
         private Boolean isFileFound = false;
         private string searchProgressLabelContent;
         private MainWindow parentWindow;
+        private int fileFoundCount;
 
         public EvermoreModel()
         { 
@@ -361,6 +368,7 @@ namespace Evermore
                         this.parentWindow.PageCanvas.Children.Add(this.SearchPage);
                         this.CurrentPage = this.SearchPage;
                         this.IsFileFound = false;
+                        this.FileFoundCount = 0;
                         this.SearchPage.FoundFilesComboBox.Items.Clear();
                         break;
                     
@@ -518,6 +526,19 @@ namespace Evermore
                     this.RaisePropertyChanged("IsFileFound");
                     this.RaisePropertyChanged("CanMoveNext");
                 }
+            }
+        }
+
+        public int FileFoundCount
+        {
+            get
+            {
+                return this.fileFoundCount;
+            }
+            set
+            {
+                this.fileFoundCount = value;
+                this.RaisePropertyChanged("FileFoundCount");
             }
         }
 
